@@ -15,13 +15,11 @@ class Venue(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField()
 
-
     state = models.ForeignKey(State, on_delete=models.PROTECT)
     district = models.ForeignKey(District, on_delete=models.PROTECT)
     address_line = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     pincode = models.CharField(max_length=10)
-
 
     status = models.CharField(
         max_length=15,
