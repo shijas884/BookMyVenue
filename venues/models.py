@@ -12,7 +12,7 @@ class Venue(models.Model):
         REJECTED = "REJECTED"
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200,unique=True)
     description = models.TextField()
 
     state = models.ForeignKey(State, on_delete=models.PROTECT)
@@ -34,7 +34,8 @@ class VenueMedia(models.Model):
     venue = models.ForeignKey(
         Venue,
         on_delete=models.CASCADE,
-        related_name="media"
+        related_name="venue_media",
+        null=True,blank=True
     )
     file = models.FileField(upload_to="venues/")
 
