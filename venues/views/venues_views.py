@@ -7,14 +7,14 @@ from rest_framework.generics import (
 from rest_framework.parsers import MultiPartParser, FormParser
 
 
-from .Serializers import (
+from venues.serializers import (
     VenueCreateSerializer,
     VenueListSerializer,
     VenueAdminUpdateSerializer,
     VenueOwnerUpdateSerializer,
     VenueMediaSerializer,
 )
-from .models import Venue, VenueMedia
+from venues.models import Venue, VenueMedia
 from account.models import User
 from account.permissions import IsOwnerRole, IsAdminRole
 
