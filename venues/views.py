@@ -14,7 +14,7 @@ from .Serializers import (
     VenueOwnerUpdateSerializer,
     VenueMediaSerializer,
 )
-from .models import Venue
+from .models import Venue, VenueMedia
 from account.models import User
 from account.permissions import IsOwnerRole, IsAdminRole
 
@@ -66,21 +66,27 @@ class VenueDetailView(RetrieveUpdateDestroyAPIView):
     
 class VenueMediaListCreateView(ListCreateAPIView):
     parser_classes = [MultiPartParser, FormParser]
-
     serializer_class = VenueMediaSerializer
-
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [IsOwnerRole()]
-        return [(IsOwnerRole | IsAdminRole)()]
+    permission_classes = [IsOwnerRole]
     
     def get_queryset(self):
         user = self.request.user
 
-        if user.role == User.Role.ADMIN:
-            return Venue.objects.all()
+        if user.role == User.Role.OWNER:
+            return VenueMedia.objects.filter(venue__owner=user)
+
+        return VenueMedia.objects.none
+
+class VenueMediaDetailView(RetrieveUpdateDestroyAPIView):
+    parser_classes = [MultiPartParser, FormParser]
+    serializer_class = VenueMediaSerializer
+    permission_classes = [IsOwnerRole]
+    
+    def get_queryset(self):
+        user = self.request.user
 
         if user.role == User.Role.OWNER:
-            return Venue.objects.filter(owner=user)
+            return VenueMedia.objects.filter(venue__owner=user)
 
-        return Venue.objects.none
+        return VenueMedia.objects.none
+
