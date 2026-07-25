@@ -6,13 +6,18 @@ from rest_framework.generics import (
 from venues.models import Facility
 from venues.serializers import FacilitySerializer
 
-from account.permissions import IsOwnerRole
+from account.permissions import IsOwnerRole, IsAdminRole
 from account.models import User
 
 
 class FacilityListCreateView(ListCreateAPIView):
-    permission_classes = [IsOwnerRole]
     serializer_class = FacilitySerializer
+
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsOwnerRole()]
+        return [(IsAdminRole | IsOwnerRole)]
 
     def get_queryset(self):
         user = self.request.user

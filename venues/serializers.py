@@ -2,7 +2,13 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 
 
-from .models import Venue, VenueMedia,Facility
+from .models import (
+    Venue,
+    VenueMedia,
+    Facility,
+    Service,
+    Price,
+)
 
 
 class VenueMediaSerializer(ModelSerializer):
@@ -99,6 +105,29 @@ class VenueAdminUpdateSerializer(ModelSerializer):
 class FacilitySerializer(ModelSerializer):
     class Meta:
         model = Facility
+        fields = [
+            "id",
+            "venue",
+            "name",
+            "amount",
+        ]
+        read_only_fields = ["id"]
+
+
+class ServiceSerializer(ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            "id",
+            "venue",
+            "name",
+            "amount",
+        ]
+        read_only_fields = ["id"]
+
+class PriceSerializer(ModelSerializer):
+    class Meta:
+        model = Price
         fields = [
             "id",
             "venue",

@@ -11,6 +11,10 @@ from venues.views.facility_views import (
     FacilityListCreateView,
     FacilityDetailView,
 )
+from venues.views.service_views import (
+    ServiceListCreateView,
+    ServiceDetailView,
+)
 
 urlpatterns = [
     # Venue
@@ -24,4 +28,8 @@ urlpatterns = [
     # Facility
     path("facilities/", FacilityListCreateView.as_view()),
     path("facilities/<int:pk>/", FacilityDetailView.as_view()),
+
+    # Services
+    path("services/",ServiceListCreateView.as_view()),
+    path("services/<int:pk>/",ServiceDetailView.as_view()),
 ]
