@@ -22,6 +22,6 @@ urlpatterns = [
     path('v1/', include('account.urls')),
     path('v1/', include('venues.urls')),
     path('v1/', include('locations.urls')),
-    # path('reviews/', include('reviews.urls'))
+    path('v1/', include('bookings.urls'))
 
 ]
