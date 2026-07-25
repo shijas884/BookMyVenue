@@ -12,11 +12,11 @@ from account.permissions import IsOwnerRole, IsAdminRole
 
 class ServiceListCreateView(ListCreateAPIView):
     serializer_class = ServiceSerializer
-    
+
     def get_permissions(self):
             if self.request.method == "POST":
                 return [IsOwnerRole()]
-            return [(IsAdminRole | IsOwnerRole)]
+            return [(IsAdminRole | IsOwnerRole)()]
 
     def get_queryset(self):
         user = self.request.user

@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
+    UpdateAPIView,
 
 )
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -53,10 +54,7 @@ class VenueListCreateView(ListCreateAPIView):
 class VenueDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminRole | IsOwnerRole]
 
-    def get_serializer_class(self):
-        if self.request.user.role == User.Role.ADMIN:
-            return VenueAdminUpdateSerializer
-        return VenueOwnerUpdateSerializer
+    serializer_class= VenueOwnerUpdateSerializer
 
     def get_queryset(self):
         user = self.request.user
@@ -94,4 +92,10 @@ class VenueMediaDetailView(RetrieveUpdateDestroyAPIView):
             return VenueMedia.objects.filter(venue__owner=user)
 
         return VenueMedia.objects.none
+
+
+class VenueApprovalView(UpdateAPIView):
+    serializer_class = VenueAdminUpdateSerializer
+    permission_classes = [IsAdminRole]
+    queryset = Venue.objects.all()
 

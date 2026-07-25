@@ -11,6 +11,52 @@ from .models import (
 )
 
 
+class FacilitySerializer(ModelSerializer):
+    class Meta:
+        model = Facility
+        fields = [
+            "id",
+            "venue",
+            "name",
+            "amount",
+        ]
+        read_only_fields = ["id"]
+
+
+class ServiceSerializer(ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            "id",
+            "venue",
+            "name",
+            "amount",
+        ]
+        read_only_fields = ["id"]
+
+
+
+class PriceSerializer(ModelSerializer):
+    class Meta:
+        model = Price
+        fields = [
+            "id",
+            "venue",
+            "name",
+            "amount",
+        ]
+        read_only_fields = ["id"]
+
+    def validate_venue(self, venue):
+        user = self.context["request"].user
+
+        if venue.owner != user:
+            raise serializers.ValidationError(
+                "You do not own this venue."
+            )
+
+        return venue
+
 class VenueMediaSerializer(ModelSerializer):
 
     class Meta:
@@ -55,6 +101,9 @@ class VenueCreateSerializer(ModelSerializer):
 
 class VenueListSerializer(ModelSerializer):
     venue_media = VenueMediaSerializer(many=True, read_only=True)
+    facilities = FacilitySerializer(many=True, read_only=True)
+    services = ServiceSerializer(many=True, read_only=True)
+    prices = PriceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Venue
@@ -73,6 +122,9 @@ class VenueListSerializer(ModelSerializer):
             "bike_parking_capacity",
             "status",
             "venue_media",
+            "facilities",
+            "services",
+            "prices",
         ]
 
 
@@ -91,7 +143,6 @@ class VenueOwnerUpdateSerializer(ModelSerializer):
             "dining_capacity",
             "car_parking_capacity",
             "bike_parking_capacity",
-            "venue_media",
         ]
 
 
@@ -100,38 +151,8 @@ class VenueAdminUpdateSerializer(ModelSerializer):
         model = Venue
         fields = ["status"]
 
+    def update(self, instance, validated_data):
+    
+        return super().update(instance, validated_data)
 
 
-class FacilitySerializer(ModelSerializer):
-    class Meta:
-        model = Facility
-        fields = [
-            "id",
-            "venue",
-            "name",
-            "amount",
-        ]
-        read_only_fields = ["id"]
-
-
-class ServiceSerializer(ModelSerializer):
-    class Meta:
-        model = Service
-        fields = [
-            "id",
-            "venue",
-            "name",
-            "amount",
-        ]
-        read_only_fields = ["id"]
-
-class PriceSerializer(ModelSerializer):
-    class Meta:
-        model = Price
-        fields = [
-            "id",
-            "venue",
-            "name",
-            "amount",
-        ]
-        read_only_fields = ["id"]

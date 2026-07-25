@@ -17,7 +17,7 @@ class FacilityListCreateView(ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == "POST":
             return [IsOwnerRole()]
-        return [(IsAdminRole | IsOwnerRole)]
+        return [(IsAdminRole | IsOwnerRole)()]
 
     def get_queryset(self):
         user = self.request.user

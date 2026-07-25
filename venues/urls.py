@@ -5,7 +5,7 @@ from venues.views.venues_views import (
     VenueDetailView,
     VenueMediaListCreateView,
     VenueMediaDetailView,
-
+    VenueApprovalView,
 )
 from venues.views.facility_views import (
     FacilityListCreateView,
@@ -24,6 +24,8 @@ urlpatterns = [
     # Venue
     path("venues/", VenueListCreateView.as_view()),
     path("venues/<int:pk>/", VenueDetailView.as_view()),
+    
+    path("venues-admin/<int:pk>/status/",VenueApprovalView.as_view()),
 
     # Venue Media
     path("venue-media/", VenueMediaListCreateView.as_view()),
