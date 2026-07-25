@@ -2,40 +2,21 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework import serializers
 
 
-from .models import Venue,Service,Facility,Price,VenueMedia
+from .models import Venue, VenueMedia
 
-
-class ServiceSerializer(ModelSerializer):
-
-    class Meta:
-        model = Service
-        fields = '__all__'
-
-class FacilitySerializer(ModelSerializer):
-
-    class Meta:
-        model = Service
-        fields = '__all__'
 
 class VenueMediaSerializer(ModelSerializer):
 
     class Meta:
         model = VenueMedia
-        fields = ["id","file","venue"]
-
-class PriceSerializer(ModelSerializer):
-
-    class Meta:
-        model = Service
-        fields = '__all__'
-
+        fields = ["id", "file", "venue"]
 
 
 class VenueCreateSerializer(ModelSerializer):
     media_ids = serializers.ListField(
-        child=serializers.IntegerField(),
-        write_only=True,
-        required=False)
+        child=serializers.IntegerField(), write_only=True, required=False
+    )
+
     class Meta:
         model = Venue
         fields = [
@@ -47,28 +28,49 @@ class VenueCreateSerializer(ModelSerializer):
             "pincode",
             "state",
             "district",
-            "media_ids"
+            "hall_capacity",
+            "dining_capacity",
+            "car_parking_capacity",
+            "bike_parking_capacity",
+            "media_ids",
         ]
 
     def create(self, validated_data):
         user = self.context["request"].user
-        media_ids =validated_data.pop("media_ids",[])
-        validated_data['owner'] = user
+        media_ids = validated_data.pop("media_ids", [])
+        validated_data["owner"] = user
 
         venue = Venue.objects.create(**validated_data)
-        VenueMedia.objects.filter(
-            id__in=media_ids,
-            venue__isnull=True
-
-        ).update(venue=venue)
+        VenueMedia.objects.filter(id__in=media_ids, venue__isnull=True).update(
+            venue=venue
+        )
         return venue
-    
-class VenueListSerializer(ModelSerializer):
-    venue_media = VenueMediaSerializer(
-        many=True,
-        read_only=True
-    )
 
+
+class VenueListSerializer(ModelSerializer):
+    venue_media = VenueMediaSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Venue
+        fields = [
+            "id",
+            "name",
+            "description",
+            "address_line",
+            "city",
+            "pincode",
+            "state",
+            "district",
+            "hall_capacity",
+            "dining_capacity",
+            "car_parking_capacity",
+            "bike_parking_capacity",
+            "status",
+            "venue_media",
+        ]
+
+
+class VenueOwnerUpdateSerializer(ModelSerializer):
     class Meta:
         model = Venue
         fields = [
@@ -79,25 +81,15 @@ class VenueListSerializer(ModelSerializer):
             "pincode",
             "state",
             "district",
+            "hall_capacity",
+            "dining_capacity",
+            "car_parking_capacity",
+            "bike_parking_capacity",
             "venue_media",
-            "status",
         ]
 
-class VenueOwnerUpdateSerializer(ModelSerializer):
-      class Meta:
-            model = Venue
-            fields = [
-                "description",
-                "address_line",
-                "city",
-                "pincode",
-                "state",
-                "district",
-            ]
+
 class VenueAdminUpdateSerializer(ModelSerializer):
-       class Meta:
+    class Meta:
         model = Venue
-        fields = ["id","status"]
-        
-
-
+        fields = ["status"]

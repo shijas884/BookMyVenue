@@ -17,7 +17,6 @@ class LoginUserView(APIView):
 
     def post(self, request):
         log_serializer = LoginUserSerializer(data=request.data)
-        print(LoginUserSerializer(data=request.data))
 
         if log_serializer.is_valid():
             return Response(

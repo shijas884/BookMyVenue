@@ -16,7 +16,7 @@ from venues.serializers import (
 )
 from venues.models import Venue, VenueMedia
 from account.models import User
-from account.permissions import IsOwnerRole, IsAdminRole
+from account.permissions import IsOwnerRole, IsAdminRole, IsCustomerRole
 
 # Create your views here.
 
@@ -26,7 +26,7 @@ class VenueListCreateView(ListCreateAPIView):
     def get_permissions(self):
         if self.request.method == "POST":
             return [IsOwnerRole()]
-        return [(IsOwnerRole | IsAdminRole)()]
+        return [(IsOwnerRole | IsAdminRole | IsCustomerRole)()]
 
     def get_serializer_class(self):
         if self.request.method == "POST":
@@ -41,6 +41,11 @@ class VenueListCreateView(ListCreateAPIView):
 
         if user.role == User.Role.OWNER:
             return Venue.objects.filter(owner=user)
+        
+        if user.role == User.Role.CUSTOMER:
+            return Venue.objects.filter(
+                status=Venue.Status.ACCEPTED
+            )
 
         return Venue.objects.none
 
