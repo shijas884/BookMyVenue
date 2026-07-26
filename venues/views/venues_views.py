@@ -52,7 +52,7 @@ class VenueListCreateView(ListCreateAPIView):
 
 
 class VenueDetailView(RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminRole | IsOwnerRole]
+    permission_classes = [ IsOwnerRole]
 
     serializer_class= VenueOwnerUpdateSerializer
 
